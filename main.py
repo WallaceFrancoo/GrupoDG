@@ -10,18 +10,53 @@ import os
 from unidecode import unidecode
 import PyPDF2
 
-
+EmpresaDoAplicativo = ''
 arquivoEmpresa = []
 arquivoCompliance = []
 arquivoChempack = []
 arquivoCertificadora = []
 def linhaArquivoEmpresa(data, debito, credito, valor, historico):
-    print("Montar a linha para a empresa")
-def linhaArquivoCompliance():
+    limparcaracter = unidecode(historico)
+    historicoAjustado = re.sub(r'[^\w\s/;.-]', '', limparcaracter)
+    linhaCompleta = f"{data};{debito};{credito};{valor};;{historicoAjustado};1;;;"
+    print(linhaCompleta)
+def verificarEmpresaDestino(empresa, data, debito, credito, valorLancamento, HistoricoCompleto, ContaBanco):
+
+    limparcaracter = unidecode(HistoricoCompleto)
+    historicoAjustado = re.sub(r'[^\w\s/;.-]', '', limparcaracter)
+
+    if empresa == '1ª DG':
+        if debito == ContaBanco:
+            credito = '803'
+        elif credito == ContaBanco:
+            debito = '803'
+    elif empresa == '2ª CERTIFICADORA':
+        if debito == ContaBanco:
+            credito = '743'
+        elif credito == ContaBanco:
+            debito = '743'
+    elif empresa == '3ª CHEMPACK':
+        if debito == ContaBanco:
+            credito = '578'
+        elif credito == ContaBanco:
+            debito = '578'
+
+
+    linhaArquivoChempack(empresa, data, debito, credito, valorLancamento, HistoricoCompleto, ContaBanco)
+
+def linhaArquivoCompliance(empresa, data, debito, credito, valorLancamento, HistoricoCompleto, ContaBanco):
+    if debito == ContaBanco:
+        credito = '803'
+    elif credito == ContaBanco:
+        debito = '803'
+    limparcaracter = unidecode(HistoricoCompleto)
+    historicoAjustado = re.sub(r'[^\w\s/;.-]', '', limparcaracter)
+    linhaCompleta = f"{data};{debito};{credito};{valorLancamento};;{historicoAjustado};1;;;"
+    print(linhaCompleta)
     print("Montar a linha para pagamentos para a Compliance")
-def linhaArquivoChempack():
+def linhaArquivoChempack(empresa, data, debito, credito, valorLancamento, HistoricoCompleto, ContaBanco):
     print("Montar a linha para pagamentos para a Chempack")
-def linhaArquivoCertificadora():
+def linhaArquivoCertificadora(empresa, data, debito, credito, valorLancamento, HistoricoCompleto, ContaBanco):
     print("Montar a linha para pagamentos para a Certificadora")
 def fazerProcv(concatenacao, planilhaID, lancamento,ContaBanco, data, valor):
 
@@ -54,18 +89,21 @@ def fazerProcv(concatenacao, planilhaID, lancamento,ContaBanco, data, valor):
                 empresa_destino = linha_encontrada['EMPRESA'].values[0]  # Pega o valor da primeira correspondência
                 tipo_documento = linha_encontrada['TIPO DOC'].values[0]
                 referencia = linha_encontrada['REFERÊNCIA'].values[0]
+                complemento = ''
                 if tipo_documento in ['FOLHA', 'DANFE', 'NFS', 'IMPOSTO', 'NFE', 'NF-e', 'NFs', 'NF']:
-                    complemento = linha_encontrada['Nº  DOCUMENTO']
+                        complemento = linha_encontrada['Nº  DOCUMENTO'].fillna('').values[0]
 
                 if empresa_destino in ['4ª DG - SERVIÇOS','5ª SASC','6ª JASC']:
                     print('Ele irá fazer o procv!')
                     debito, credito, valorLancamento, inicioHistorico  = verificarValor(valor, lancamento, data, ContaBanco)
-                    historicoPersonalizado =
-                    print(f"{debito}, {credito}, {valorLancamento}, {lancamento}, {complemento} ")
-                    #linhaArquivoEmpresa(data, )
+                    HistoricoCompleto = f"{inicioHistorico}{referencia} - {complemento}"
+                    linhaArquivoEmpresa(data, debito, credito, valor, HistoricoCompleto)
 
                 else:
                     print('Pagamento para outras empresas')
+                    debito, credito, valorLancamento, inicioHistorico  = verificarValor(valor, lancamento, data, ContaBanco)
+                    HistoricoCompleto = f"{inicioHistorico}{referencia} - {complemento}"
+                    verificarEmpresaDestino(empresa_destino, data, debito, credito, valorLancamento, HistoricoCompleto, ContaBanco)
 
                 print(f'Achou! A empresa correspondente é: {empresa_destino}\n---------------------------------------------------------')
                 return empresa_destino  # Retorna a informação encontrada
