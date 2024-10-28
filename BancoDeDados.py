@@ -19,7 +19,7 @@ def ConsultarDG(valor):
     tabelaHistorico = cursor.fetchall()
 
     if tabelaHistorico:
-        cursor.execute('SELECT DE, PARA FROM deParaDGServicos WHERE ? LIKE "%" || DE || "%" COLLATE NOCASE', (valor,))
+        cursor.execute('SELECT DE, DGSERVICOS FROM deParaDGServicos WHERE ? LIKE "%" || DE || "%" COLLATE NOCASE', (valor,))
         tabela = cursor.fetchall()
         if tabela:
             return tabela[0][1]
@@ -28,6 +28,50 @@ def ConsultarDG(valor):
     else:
         return f"6"
 
+def ConsultarCompliance(valor):
+    cursor.execute('SELECT * FROM deParaDGServicos')
+    tabelaHistorico = cursor.fetchall()
+
+    if tabelaHistorico:
+        cursor.execute('SELECT DE, DGCOMPLIANCE FROM deParaDGServicos WHERE ? LIKE "%" || DE || "%" COLLATE NOCASE',
+                       (valor,))
+        tabela = cursor.fetchall()
+        if tabela:
+            return tabela[0][1]
+        else:
+            return f"6"
+    else:
+        return f"6"
+
+def ConsultarCertificadora(valor):
+    cursor.execute('SELECT * FROM deParaDGServicos')
+    tabelaHistorico = cursor.fetchall()
+
+    if tabelaHistorico:
+        cursor.execute('SELECT DE, CERTIFICADORA FROM deParaDGServicos WHERE ? LIKE "%" || DE || "%" COLLATE NOCASE',
+                       (valor,))
+        tabela = cursor.fetchall()
+        if tabela:
+            return tabela[0][1]
+        else:
+            return f"6"
+    else:
+        return f"6"
+
+def ConsultarChempack(valor):
+    cursor.execute('SELECT * FROM deParaDGServicos')
+    tabelaHistorico = cursor.fetchall()
+
+    if tabelaHistorico:
+        cursor.execute('SELECT DE, CHEMPACK FROM deParaDGServicos WHERE ? LIKE "%" || DE || "%" COLLATE NOCASE',
+                       (valor,))
+        tabela = cursor.fetchall()
+        if tabela:
+            return tabela[0][1]
+        else:
+            return f"6"
+    else:
+        return f"6"
 def adicionar_DadosDGServicos(DE, PARA):
     cursor.execute('SELECT * FROM deParaDGServicos WHERE DE = ? ',(DE,))
     resultado = cursor.fetchone()
@@ -37,12 +81,12 @@ def adicionar_DadosDGServicos(DE, PARA):
         resposta = messagebox.askquestion("Atualizar", f"Essa associação DE-PARA já existe na DGServicos com a conta {retorno}. \nDeseja atualizar os dados?", icon='warning')
 
         if resposta == 'yes':
-            cursor.execute('UPDATE deParaDGServicos SET PARA = ? WHERE DE = ?', (PARA, DE))
+            cursor.execute('UPDATE deParaDGServicos SET DGSERVICOS = ? WHERE DE = ?', (PARA, DE))
             conn.commit()
             messagebox.showinfo("Sucesso","Dados atualizados com sucesso")
         else:
             messagebox.showinfo("Aviso", "Os Dados nao foram atualizados")
     else:
-        cursor.execute('INSERT INTO deParaDGServicos(DE,PARA) VALUES (?, ?)',(DE, PARA))
+        cursor.execute('INSERT INTO deParaDGServicos(DE,DG SERVICOS) VALUES (?, ?)',(DE, PARA))
         conn.commit()
         messagebox.showinfo("Sucesso", f"Cadastro do historico {DE}, foi cadastrado para a conta {PARA}!")

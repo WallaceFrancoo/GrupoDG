@@ -20,7 +20,7 @@ def linhaArquivoEmpresa(data, debito, credito, valor, historico):
     historicoAjustado = re.sub(r'[^\w\s/;.-]', '', limparcaracter)
     linhaCompleta = f"{data};{debito};{credito};{valor};;{historicoAjustado};1;;;"
     print(linhaCompleta)
-def verificarEmpresaDestino(empresa, data, debito, credito, valorLancamento, HistoricoCompleto, ContaBanco):
+def verificarEmpresaDestino(empresa, data, debito, credito, valorLancamento, HistoricoCompleto, ContaBanco, lancamento):
 
     limparcaracter = unidecode(HistoricoCompleto)
     historicoAjustado = re.sub(r'[^\w\s/;.-]', '', limparcaracter)
@@ -40,20 +40,32 @@ def verificarEmpresaDestino(empresa, data, debito, credito, valorLancamento, His
             credito = '578'
         elif credito == ContaBanco:
             debito = '578'
+    linhaArquivoEmpresa(data,debito,credito,valorLancamento,HistoricoCompleto)
+    linhaArquivoEntreEmpresas(empresa, data, debito, credito, valorLancamento, HistoricoCompleto, ContaBanco, lancamento)
 
+def linhaArquivoEntreEmpresas(empresa, data, debito, credito, valorLancamento, HistoricoCompleto, ContaBanco, lancamento):
+    if empresa == '1ª DG':
+        if debito == '803':
+            debito = BancoDeDados.ConsultarCompliance(lancamento)
+            credito = '714'
+        elif credito == '803':
+            debito = '714'
+            credito = BancoDeDados.ConsultarCompliance(lancamento)
+        linhaArquivoCompliance(data, debito, credito, valorLancamento, HistoricoCompleto)
+    elif empresa == '2ª CERTIFICADORA':
+        if debito == ContaBanco:
+            credito = '743'
+        elif credito == ContaBanco:
+            debito = '743'
+    elif empresa == '3ª CHEMPACK':
+        if debito == ContaBanco:
+            credito = '578'
+        elif credito == ContaBanco:
+            debito = '578'
 
-    linhaArquivoChempack(empresa, data, debito, credito, valorLancamento, HistoricoCompleto, ContaBanco)
-
-def linhaArquivoCompliance(empresa, data, debito, credito, valorLancamento, HistoricoCompleto, ContaBanco):
-    if debito == ContaBanco:
-        credito = '803'
-    elif credito == ContaBanco:
-        debito = '803'
-    limparcaracter = unidecode(HistoricoCompleto)
-    historicoAjustado = re.sub(r'[^\w\s/;.-]', '', limparcaracter)
-    linhaCompleta = f"{data};{debito};{credito};{valorLancamento};;{historicoAjustado};1;;;"
+def linhaArquivoCompliance(data, debito, credito, valor, historico):
+    linhaCompleta = f"{data};{debito};{credito};{valor};;{historico};1;;;"
     print(linhaCompleta)
-    print("Montar a linha para pagamentos para a Compliance")
 def linhaArquivoChempack(empresa, data, debito, credito, valorLancamento, HistoricoCompleto, ContaBanco):
     print("Montar a linha para pagamentos para a Chempack")
 def linhaArquivoCertificadora(empresa, data, debito, credito, valorLancamento, HistoricoCompleto, ContaBanco):
@@ -103,7 +115,7 @@ def fazerProcv(concatenacao, planilhaID, lancamento,ContaBanco, data, valor):
                     print('Pagamento para outras empresas')
                     debito, credito, valorLancamento, inicioHistorico  = verificarValor(valor, lancamento, data, ContaBanco)
                     HistoricoCompleto = f"{inicioHistorico}{referencia} - {complemento}"
-                    verificarEmpresaDestino(empresa_destino, data, debito, credito, valorLancamento, HistoricoCompleto, ContaBanco)
+                    verificarEmpresaDestino(empresa_destino, data, debito, credito, valorLancamento, HistoricoCompleto, ContaBanco, lancamento)
 
                 print(f'Achou! A empresa correspondente é: {empresa_destino}\n---------------------------------------------------------')
                 return empresa_destino  # Retorna a informação encontrada
