@@ -5,10 +5,16 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="f0c4d60a-ba5f-4f56-9ae1-d07f99b4582b" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/Aplicativo.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/840 - PAGAMENTO DA DG SERVIÇOS - 3.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/841 - PAGAMENTO DA DG SERVIÇOS - 3.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/842 - PAGAMENTO DA DG SERVIÇOS - 3.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/843 - EXTRATO BRADESCO - 3.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Aplicativo.py" beforeDir="false" afterPath="$PROJECT_DIR$/Aplicativo.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/BancoDeDados.py" beforeDir="false" afterPath="$PROJECT_DIR$/BancoDeDados.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/JANEIRO DG SERVICOS.XLS" beforeDir="false" afterPath="$PROJECT_DIR$/JANEIRO DG SERVICOS.XLS" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Contas em Acerto - 03.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Contas em Acerto - 3.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/DePara/ConceptaDGServico.db" beforeDir="false" afterPath="$PROJECT_DIR$/DePara/ConceptaDGServico.db" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -34,13 +40,13 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "last_opened_file_path": "Z:/Diversos/Projetos T.I/Deskarplas/Aplicativo.py"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;Z:/Diversos/Projetos T.I/Deskarplas/Aplicativo.py&quot;
   }
-}]]></component>
+}</component>
   <component name="RunManager" selected="Python.Aplicativo">
     <configuration name="Aplicativo" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="GrupoDG" />
@@ -181,19 +187,39 @@
           <option name="timeStamp" value="8" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/main.py</url>
-          <line>21</line>
-          <option name="timeStamp" value="11" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/BancoDeDados.py</url>
           <line>27</line>
           <option name="timeStamp" value="12" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/Aplicativo.py</url>
+          <line>9</line>
+          <option name="timeStamp" value="15" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/main.py</url>
+          <line>89</line>
+          <option name="timeStamp" value="16" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/main.py</url>
+          <line>565</line>
+          <option name="timeStamp" value="17" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/BancoDeDados.py</url>
-          <line>55</line>
-          <option name="timeStamp" value="13" />
+          <line>87</line>
+          <option name="timeStamp" value="18" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/BancoDeDados.py</url>
+          <line>14</line>
+          <option name="timeStamp" value="19" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/BancoDeDados.py</url>
+          <line>69</line>
+          <option name="timeStamp" value="20" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

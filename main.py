@@ -15,8 +15,13 @@ arquivoEmpresa = []
 arquivoCompliance = []
 arquivoChempack = []
 arquivoCertificadora = []
+arquivoDGServicos = []
 relatorioErro = []
 mes = []
+BancoDGServicos = 'BRADESCO DG SERVIÇOS'
+BancoDGCompliance = ['BRADESCO DG','BRADESCO DG COMPLIANCE']
+BancoChempack = 'BRADESCO CHEMPACK'
+BancoCertificadora = 'BRADESCO CERTIFICADORA'
 
 
 def linhaArquivoEmpresa(data, debito, credito, valor, historico):
@@ -32,7 +37,10 @@ def linhaArquivoEmpresa(data, debito, credito, valor, historico):
         'Debito': debito,
         'Credito': credito
     })
-    if debito == "6" or credito == "6":
+    print(f"{debito} - {credito}")
+
+    if str(debito).strip() == "6" or str(credito).strip() == "6":
+        print('vai ir pro relatorio')
         relatorioErro.append({
             'data': data,
             'lançamento': historicoAjustado,
@@ -40,57 +48,180 @@ def linhaArquivoEmpresa(data, debito, credito, valor, historico):
             'Debito': debito,
             'Credito': credito
         })
-    print(linhaCompleta)
 
-def verificarEmpresaDestino(empresa, data, debito, credito, valorLancamento, HistoricoCompleto, ContaBanco, lancamento):
+    print(linhaCompleta)
+def verificarEmpresaDestino(opcao, banco, empresaPagante, empresa, data, debito, credito, valorLancamento, HistoricoCompleto, ContaBanco, lancamento):
 
     limparcaracter = unidecode(HistoricoCompleto)
     historicoAjustado = re.sub(r'[^\w\s/;.-]', '', limparcaracter)
+    print(opcao)
+    if opcao == '1ª DG': #842
+        if empresa == '3ª CHEMPACK':
+            if debito == ContaBanco:
+                credito = '803'
+            elif credito == ContaBanco:
+                debito = '803'
+        elif empresa == '2ª CERTIFICADORA':
+            if debito == ContaBanco:
+                credito = '743'
+            elif credito == ContaBanco:
+                debito = '743'
+        elif empresa == '4ª DG - SERVIÇOS':
+            if debito == ContaBanco:
+                credito = '714'
+            elif credito == ContaBanco:
+                debito = '714'
+    elif opcao == '2ª CERTIFICADORA': #841
+        if empresa == '3ª CHEMPACK':
+            if debito == ContaBanco:
+                credito = '578'
+            elif credito == ContaBanco:
+                debito = '578'
+        elif empresa == '1ª DG':
+            if debito == ContaBanco:
+                credito = '726'
+            elif credito == ContaBanco:
+                debito = '726'
+        elif empresa == '4ª DG - SERVIÇOS':
+            if debito == ContaBanco:
+                credito = '581'
+            elif credito == ContaBanco:
+                debito = '581'
+    elif opcao == '3ª CHEMPACK': # 840
+        if empresa == '2ª CERTIFICADORA':
+            if debito == ContaBanco:
+                credito = '725'
+            elif credito == ContaBanco:
+                debito = '725'
+        elif empresa == '1ª DG':
+            if debito == ContaBanco:
+                credito = '712'
+            elif credito == ContaBanco:
+                debito = '712'
+        elif empresa == '4ª DG - SERVIÇOS':
+            if debito == ContaBanco:
+                credito = '726'
+            elif credito == ContaBanco:
+                debito = '726'
+    elif opcao == '4ª DG - SERVIÇOS': #843
+        if empresa == '1ª DG':
+            if debito == ContaBanco:
+                credito = '803'
+            elif credito == ContaBanco:
+                debito = '803'
+        elif empresa == '2ª CERTIFICADORA':
+            if debito == ContaBanco:
+                credito = '743'
+            elif credito == ContaBanco:
+                debito = '743'
+        elif empresa == '3ª CHEMPACK':
+            if debito == ContaBanco:
+                credito = '578'
+            elif credito == ContaBanco:
+                debito = '578'
 
-    if empresa == '1ª DG':
-        if debito == ContaBanco:
-            credito = '803'
-        elif credito == ContaBanco:
-            debito = '803'
-    elif empresa == '2ª CERTIFICADORA':
-        if debito == ContaBanco:
-            credito = '743'
-        elif credito == ContaBanco:
-            debito = '743'
-    elif empresa == '3ª CHEMPACK':
-        if debito == ContaBanco:
-            credito = '578'
-        elif credito == ContaBanco:
-            debito = '578'
     linhaArquivoEmpresa(data,debito,credito,valorLancamento,HistoricoCompleto)
-    linhaArquivoEntreEmpresas(empresa, data, debito, credito, valorLancamento, HistoricoCompleto, ContaBanco, lancamento)
-
-def linhaArquivoEntreEmpresas(empresa, data, debito, credito, valorLancamento, HistoricoCompleto, ContaBanco, lancamento):
-    if empresa == '1ª DG':
-        if debito == '803':
-            debito = BancoDeDados.ConsultarCompliance(lancamento)
-            credito = '714'
-        elif credito == '803':
-            debito = '714'
-            credito = BancoDeDados.ConsultarCompliance(lancamento)
-        linhaArquivoCompliance(data, debito, credito, valorLancamento, HistoricoCompleto)
-    elif empresa == '2ª CERTIFICADORA':
-        if debito == '743':
-            debito = BancoDeDados.ConsultarCertificadora(lancamento)
-            credito = '581'
-        elif credito == '743':
-            debito = '581'
-            credito = BancoDeDados.ConsultarCertificadora(lancamento)
-        linhaArquivoCertificadora(data, debito, credito, valorLancamento, HistoricoCompleto)
-    elif empresa == '3ª CHEMPACK':
-        if debito == '578':
-            debito = BancoDeDados.ConsultarChempack(lancamento)
-            credito = '726'
-        elif credito == '578':
-            debito = '726'
-            credito = BancoDeDados.ConsultarChempack(lancamento)
-        linhaArquivoChempack(data, debito, credito, valorLancamento, HistoricoCompleto)
-
+    linhaArquivoEntreEmpresas(opcao, empresa, data, debito, credito, valorLancamento, HistoricoCompleto, ContaBanco, lancamento)
+def linhaArquivoEntreEmpresas(opcao, empresa, data, debito, credito, valorLancamento, HistoricoCompleto, ContaBanco, lancamento):
+    if opcao == '4ª DG - SERVIÇOS':
+        if empresa == '1ª DG':
+            if debito == '803':
+                debito = BancoDeDados.ConsultarCompliance(lancamento)
+                credito = '714'
+            elif credito == '803':
+                debito = '714'
+                credito = BancoDeDados.ConsultarCompliance(lancamento)
+            linhaArquivoCompliance(data, debito, credito, valorLancamento, HistoricoCompleto)
+        elif empresa == '2ª CERTIFICADORA':
+            if debito == '743':
+                debito = BancoDeDados.ConsultarCertificadora(lancamento)
+                credito = '581'
+            elif credito == '743':
+                debito = '581'
+                credito = BancoDeDados.ConsultarCertificadora(lancamento)
+            linhaArquivoCertificadora(data, debito, credito, valorLancamento, HistoricoCompleto)
+        elif empresa == '3ª CHEMPACK':
+            if debito == '578':
+                debito = BancoDeDados.ConsultarChempack(lancamento)
+                credito = '726'
+            elif credito == '578':
+                debito = '726'
+                credito = BancoDeDados.ConsultarChempack(lancamento)
+            linhaArquivoChempack(data, debito, credito, valorLancamento, HistoricoCompleto)
+    elif opcao == '3ª CHEMPACK':
+        if empresa == '1ª DG':
+            if debito == '712':
+                debito = BancoDeDados.ConsultarCompliance(lancamento)
+                credito = '803'
+            elif credito == '712':
+                debito = '803'
+                credito = BancoDeDados.ConsultarCompliance(lancamento)
+            linhaArquivoChempack(data, debito, credito, valorLancamento, HistoricoCompleto)
+        elif empresa == '2ª CERTIFICADORA':
+            if debito == '725':
+                debito = BancoDeDados.ConsultarCertificadora(lancamento)
+                credito = '578'
+            elif credito == '725':
+                debito = '578'
+                credito = BancoDeDados.ConsultarCertificadora(lancamento)
+            linhaArquivoCertificadora(data, debito, credito, valorLancamento, HistoricoCompleto)
+        elif empresa == '4ª DG - SERVIÇOS':
+            if debito == '726':
+                debito = BancoDeDados.ConsultarDG(lancamento)
+                credito = '578'
+            elif credito == '726':
+                debito = '578'
+                credito = BancoDeDados.ConsultarDG(lancamento)
+            linhaArquivoDGServicos(data, debito, credito, valorLancamento, HistoricoCompleto)
+    elif opcao == '2ª CERTIFICADORA':
+        if empresa == '1ª DG':
+            if debito == '726':
+                debito = BancoDeDados.ConsultarCompliance(lancamento)
+                credito = '743'
+            elif credito == '726':
+                debito = '743'
+                credito = BancoDeDados.ConsultarCompliance(lancamento)
+        elif empresa == '3ª CHEMPACK':
+            if debito == '578':
+                debito = BancoDeDados.ConsultarChempack(lancamento)
+                credito = '725'
+            elif credito == '578':
+                debito = '725'
+                credito = BancoDeDados.ConsultarChempack(lancamento)
+            linhaArquivoChempack(data, debito, credito, valorLancamento, HistoricoCompleto)
+        elif empresa == '4ª DG - SERVIÇOS':
+            if debito == '581':
+                debito = BancoDeDados.ConsultarDG(lancamento)
+                credito = '743'
+            elif credito == '581':
+                debito = '743'
+                credito = BancoDeDados.ConsultarDG(lancamento)
+            linhaArquivoDGServicos(data, debito, credito, valorLancamento, HistoricoCompleto)
+    elif opcao == '1ª DG':
+        if empresa == '3ª CHEMPACK':
+            if debito == '803':
+                debito = BancoDeDados.ConsultarChempack(lancamento)
+                credito = '712'
+            elif credito == '803':
+                debito = '712'
+                credito = BancoDeDados.ConsultarChempack(lancamento)
+            linhaArquivoChempack(data, debito, credito, valorLancamento, HistoricoCompleto)
+        elif empresa == '4ª DG - SERVIÇOS':
+            if debito == '714':
+                debito = BancoDeDados.ConsultarDG(lancamento)
+                credito = '803'
+            elif credito == '714':
+                debito = '803'
+                credito = BancoDeDados.ConsultarDG(lancamento)
+            linhaArquivoDGServicos(data, debito, credito, valorLancamento, HistoricoCompleto)
+        elif empresa == '2ª CERTIFICADORA':
+            if debito == '743':
+                debito = BancoDeDados.ConsultarCertificadora(lancamento)
+                credito = '726'
+            elif credito == '743':
+                debito = '726'
+                credito = BancoDeDados.ConsultarCertificadora(lancamento)
+            linhaArquivoCertificadora(data, debito, credito, valorLancamento, HistoricoCompleto)
 def linhaArquivoCompliance(data, debito, credito, valor, historico):
 
     valorNovo = str(valor).replace("-", "").replace(".", ",")
@@ -109,6 +240,7 @@ def linhaArquivoCompliance(data, debito, credito, valor, historico):
             'Debito': debito,
             'Credito': credito
         })
+    print('Executou a linha Compliance')
 def linhaArquivoChempack(data, debito, credito, valor, historico):
     valorNovo = str(valor).replace("-", "").replace(".", ",")
     arquivoChempack.append({
@@ -126,6 +258,7 @@ def linhaArquivoChempack(data, debito, credito, valor, historico):
             'Debito': debito,
             'Credito': credito
         })
+    print('Executou a linha Chempack')
 def linhaArquivoCertificadora(data, debito, credito, valor, historico):
     valorNovo = str(valor).replace("-", "").replace(".", ",")
     arquivoCertificadora.append({
@@ -143,7 +276,28 @@ def linhaArquivoCertificadora(data, debito, credito, valor, historico):
             'Debito': debito,
             'Credito': credito
         })
-def fazerProcv(concatenacao, planilhaID, lancamento,ContaBanco, data, valor):
+    print('Executou a linha Certificadora')
+def linhaArquivoDGServicos(data, debito, credito, valor, historico):
+
+    valorNovo = str(valor).replace("-", "").replace(".", ",")
+    arquivoDGServicos.append({
+        'data': data,
+        'lançamento': historico,
+        'valor': valorNovo,
+        'Debito': debito,
+        'Credito': credito
+    })
+    if debito == "6" or credito == "6":
+        relatorioErro.append({
+            'data': data,
+            'lançamento': historico,
+            'valor': valorNovo,
+            'Debito': debito,
+            'Credito': credito
+        })
+
+    print('Executou a linha DGServicos')
+def fazerProcv(banco, opcao, concatenacao, planilhaID, lancamento,ContaBanco, data, valor):
     # Lendo a planilha de identificação
     identificacao = pd.read_excel(planilhaID)
 
@@ -174,31 +328,39 @@ def fazerProcv(concatenacao, planilhaID, lancamento,ContaBanco, data, valor):
                 tipo_documento = linha_encontrada['TIPO DOC'].values[0]
                 referencia = linha_encontrada['REFERÊNCIA'].values[0]
                 complemento = ''
-                if bancoPagamento == 'BRADESCO DG SERVIÇOS':
+                if bancoPagamento in banco:
                     if tipo_documento in ['FOLHA', 'DANFE', 'NFS', 'IMPOSTO', 'NFE', 'NF-e', 'NFs', 'NF']:
                             complemento = linha_encontrada['Nº  DOCUMENTO'].fillna('').values[0]
 
-                    if empresa_destino in ['4ª DG - SERVIÇOS','5ª SASC','6ª JASC']:
-                        print('Ele irá fazer o procv!')
-                        debito, credito, valorLancamento, inicioHistorico  = verificarValor(valor, lancamento, data, ContaBanco)
+                    if empresa_destino in [opcao ,'5ª SASC','6ª JASC']:
+                        print(f'Ele irá fazer o procv!{opcao}')
+                        debito, credito, valorLancamento, inicioHistorico  = verificarValor(opcao, valor, lancamento, data, ContaBanco)
                         HistoricoCompleto = f"{inicioHistorico}{referencia} - {complemento}"
                         linhaArquivoEmpresa(data, debito, credito, valor, HistoricoCompleto)
-
+                    elif tipo_documento == 'MÚTUO':
+                        print('Emprestimo entre empresas!')
+                        debito, credito, valorLancamento, inicioHistorico = verificarValor(opcao, valor, lancamento,
+                                                                                           data,
+                                                                                           ContaBanco)
+                        HistoricoCompleto = f"{inicioHistorico}{lancamento}"
+                        linhaArquivoEmpresa(data, debito, credito, valor, HistoricoCompleto)
                     else:
-                        print('Pagamento para outras empresas')
-                        debito, credito, valorLancamento, inicioHistorico  = verificarValor(valor, lancamento, data, ContaBanco)
+                        print(f'Pagamento para outras empresas {opcao}')
+                        debito, credito, valorLancamento, inicioHistorico  = verificarValor(opcao, valor, lancamento, data, ContaBanco)
                         HistoricoCompleto = f"{inicioHistorico}{referencia} - {complemento}"
-                        verificarEmpresaDestino(empresa_destino, data, debito, credito, valorLancamento, HistoricoCompleto, ContaBanco, lancamento)
+                        verificarEmpresaDestino(opcao, banco, bancoPagamento, empresa_destino, data, debito, credito, valorLancamento, HistoricoCompleto, ContaBanco, lancamento)
                     print(f'Achou! A empresa correspondente é: {empresa_destino}\n---------------------------------------------------------')
                     return empresa_destino  # Retorna a informação encontrada
                 else:
-                    debito, credito, valorLancamento, inicioHistorico = verificarValor(valor, lancamento, data,ContaBanco)
-                    HistoricoCompleto = f"{inicioHistorico}{referencia} - {complemento}"
+                    print("revisar aqui")
+                    debito, credito, valorLancamento, inicioHistorico = verificarValor(opcao, valor, lancamento, data,
+                                                                                       ContaBanco)
+                    HistoricoCompleto = f"{inicioHistorico}{lancamento}"
                     linhaArquivoEmpresa(data, debito, credito, valor, HistoricoCompleto)
 
             else:
                 print(f'Não Achou. Valores concatenados: {identificacao["concat_coluna"].values}')
-                debito, credito, valorLancamento, inicioHistorico = verificarValor(valor, lancamento, data, ContaBanco)
+                debito, credito, valorLancamento, inicioHistorico = verificarValor(opcao, valor, lancamento, data, ContaBanco)
                 HistoricoCompleto = f"{inicioHistorico}{lancamento}"
                 linhaArquivoEmpresa(data, debito, credito, valor, HistoricoCompleto)
                 print(f"Lançamento que não achou, mas tem no banco!\n--------------------------------------------------")
@@ -206,7 +368,7 @@ def fazerProcv(concatenacao, planilhaID, lancamento,ContaBanco, data, valor):
         else:
             print(
                 f"O Valor é: {concatenacao}\nAs colunas 'DATA DO PAGTO/CRÉDITO' ou 'VALOR PAGO/RECEBIDO' não foram encontradas.")
-            debito, credito, valorLancamento, inicioHistorico = verificarValor(valor, lancamento, data, ContaBanco)
+            debito, credito, valorLancamento, inicioHistorico = verificarValor(opcao, valor, lancamento, data, ContaBanco)
             HistoricoCompleto = f"{inicioHistorico}{lancamento}"
             linhaArquivoEmpresa(data, debito, credito, valor, HistoricoCompleto)
             return False
@@ -244,32 +406,58 @@ def is_valid_date_for_month(data, user_input):
             return False
     except (ValueError, TypeError):
         return False
-
-def verificarValor(valor, lancamento, data, ContaBanco):
+def verificarValor(opcao, valor, lancamento, data, ContaBanco):
     debito = ''
     credito = ''
-    if valor < 0 :
-        debito = BancoDeDados.ConsultarDG(lancamento)
-        credito = ContaBanco
-        inicioHistorico = "PAGAMENTO REF. "
-    elif valor > 0:
-        debito = ContaBanco
-        credito = BancoDeDados.ConsultarDG(lancamento)
-        inicioHistorico = "RECEBIMENTO REF. "
-        if credito == "187":
-            if int(data[:2]) > 0 and int(data[:2]) < 8:
-                credito = '187'
-            elif int(data[:2]) > 8 and int(data[:2]) < 13:
-                credito = '189'
-            elif int(data[:2]) > 13 and int(data[:2]) < 21:
-                credito = '25'
-            else:
-                credito = '187'
+    if opcao == '4ª DG - SERVIÇOS':
+        if valor < 0 :
+            debito = BancoDeDados.ConsultarDG(lancamento)
+            credito = ContaBanco
+            inicioHistorico = "PAGAMENTO REF. "
+        elif valor > 0:
+            debito = ContaBanco
+            credito = BancoDeDados.ConsultarDG(lancamento)
+            inicioHistorico = "RECEBIMENTO REF. "
+    elif opcao == '1ª DG':
+        if valor < 0 :
+            debito = BancoDeDados.ConsultarCompliance(lancamento)
+            credito = ContaBanco
+            inicioHistorico = "PAGAMENTO REF. "
+        elif valor > 0:
+            debito = ContaBanco
+            credito = BancoDeDados.ConsultarCompliance(lancamento)
+            inicioHistorico = "RECEBIMENTO REF. "
+    elif opcao == '3ª CHEMPACK':
+        if valor < 0 :
+            debito = BancoDeDados.ConsultarChempack(lancamento)
+            credito = ContaBanco
+            inicioHistorico = "PAGAMENTO REF. "
+        elif valor > 0:
+            debito = ContaBanco
+            credito = BancoDeDados.ConsultarChempack(lancamento)
+            inicioHistorico = "RECEBIMENTO REF. "
+    elif opcao == '2ª CERTIFICADORA':
+        if valor < 0 :
+            debito = BancoDeDados.ConsultarCertificadora(lancamento)
+            credito = ContaBanco
+            inicioHistorico = "PAGAMENTO REF. "
+        elif valor > 0:
+            debito = ContaBanco
+            credito = BancoDeDados.ConsultarCertificadora(lancamento)
+            inicioHistorico = "RECEBIMENTO REF. "
+    if credito == "187":
+        if int(data[:2]) > 0 and int(data[:2]) < 8:
+            credito = '187'
+        elif int(data[:2]) > 8 and int(data[:2]) < 13:
+            credito = '189'
+        elif int(data[:2]) > 13 and int(data[:2]) < 21:
+            credito = '25'
+        else:
+            credito = '187'
     valorLancamento = valor
     return debito, credito, valorLancamento, inicioHistorico
-def processar_extrato(caminho_extrato,caminho_identificacao ,mes):
+def processar_extrato(banco, opcao, caminho_extrato,caminho_identificacao ,mes):
     ContaBanco = '537'
-
     try:
         extrato = pd.read_excel(caminho_extrato, header=8, engine='xlrd')  # Para arquivos XLS
     except ValueError:
@@ -279,7 +467,6 @@ def processar_extrato(caminho_extrato,caminho_identificacao ,mes):
         identificacao = pd.read_excel(caminho_identificacao, header=0, engine='xlrd')  # Para arquivos XLS
     except ValueError:
         identificacao = pd.read_excel(caminho_identificacao, header=0, engine='openpyxl')  # Para arquivos XLSX
-
 
     extrato.columns = extrato.columns.str.strip()
     identificacao.columns = identificacao.columns.str.strip()
@@ -322,15 +509,14 @@ def processar_extrato(caminho_extrato,caminho_identificacao ,mes):
 
         # Imprimindo a concatenação
         print(concatenacao)
+        print(opcao)
 
         # Passando a concatenação para a função
-        fazerProcv(concatenacao, caminho_identificacao,lancamento,ContaBanco, data, valor)
+        fazerProcv(banco, opcao, concatenacao, caminho_identificacao,lancamento,ContaBanco, data, valor)
 
-    return arquivoEmpresa, arquivoCompliance, arquivoChempack, arquivoCertificadora, relatorioErro
-
-
-def buscarArquivo():
-    global arquivoEmpresa, arquivoCompliance, arquivoChempack, arquivoCertificadora, relatorioErro, mes
+    return arquivoEmpresa, arquivoCompliance, arquivoChempack, arquivoCertificadora, arquivoDGServicos, relatorioErro
+def buscarArquivo(opcao):
+    global arquivoEmpresa, arquivoCompliance, arquivoChempack, arquivoCertificadora, arquivoDGServicos, relatorioErro, mes
 
     mes = simpledialog.askstring("Entrada", "Digite o mês (Numerico!):")
     arquivo = filedialog.askopenfilename(
@@ -342,22 +528,39 @@ def buscarArquivo():
         filetypes=(("Identificação","*.*"), ("Todos os arquivos", "*.*"))
     )
 
+    BancoDGServicos = 'BRADESCO DG SERVIÇOS'
+    BancoDGCompliance = ['BRADESCO DG', 'BRADESCO DG COMPLIANCE']
+    BancoChempack = 'BRADESCO CHEMPACK'
+    BancoCertificadora = 'BRADESCO CERTIFICADORA'
+    banco = ''
+
+    if opcao == '840':
+        opcao = '3ª CHEMPACK'
+        banco = BancoChempack
+    elif opcao == '841':
+        opcao = '2ª CERTIFICADORA'
+        banco = BancoCertificadora
+    elif opcao == '842':
+        opcao = '1ª DG'
+        banco = BancoDGCompliance
+    elif opcao == '843':
+        opcao = '4ª DG - SERVIÇOS'
+        banco = BancoDGServicos
+
     if arquivo:
-        arquivoEmpresa, arquivoCompliance, arquivoChempack, arquivoCertificadora, relatorioErro = processar_extrato(arquivo, arquivoIdentificacao,mes)
+        arquivoEmpresa, arquivoCompliance, arquivoChempack, arquivoCertificadora, arquivoDGServicos, relatorioErro = processar_extrato(banco, opcao, arquivo, arquivoIdentificacao,mes)
         messagebox.showinfo('Sucesso','Os documentos estão prontos para serem gerados!')
         return
     else:
         return None
-
-
-def gerarArquivo():
-    global arquivoEmpresa, arquivoCompliance, arquivoChempack, arquivoCertificadora, relatorioErro
+def gerarArquivo(empresa):
+    global arquivoEmpresa, arquivoCompliance, arquivoChempack, arquivoCertificadora, arquivoDGServicos, relatorioErro
     messagebox.showinfo('Aviso', 'Irá gerar os arquivos para importação em cada empresa')
 
     caminho_arquivo_txt = filedialog.asksaveasfilename(
         title="Salvar arquivo como",
         defaultextension=".txt",
-        initialfile=f"843 - EXTRATO BRADESCO - {mes}",
+        initialfile=f"ARQUIVO PRINCIPAL DA EMPRESA - {empresa} - {mes}",
         filetypes=(("Arquivo de Texto", "*.txt"), ("Todos os arquivos", "*.*"))
     )
     if caminho_arquivo_txt:
@@ -377,7 +580,7 @@ def gerarArquivo():
             caminho_Compliance_txt = filedialog.asksaveasfilename(
                 title="Salvar relatório da complince TXT",
                 defaultextension=".txt",
-                initialfile=f"842 - PAGAMENTO DA DG SERVIÇOS - {mes}",
+                initialfile=f"842 - PAGAMENTOS PARA A COMPLINCE DA EMPRESA - {empresa} - {mes}",
                 filetypes=(("Arquivo de Texto", "*.txt"), ("Todos os arquivos", "*.*"))
             )
             if caminho_Compliance_txt:
@@ -395,7 +598,7 @@ def gerarArquivo():
             caminho_Chempack_txt = filedialog.asksaveasfilename(
                 title="Salvar relatório da Chempack TXT",
                 defaultextension=".txt",
-                initialfile=f"840 - PAGAMENTO DA DG SERVIÇOS - {mes}",
+                initialfile=f"840 - PAGAMENTOS PARA A CHEMPACK DA EMPRESA - {empresa} - {mes}",
                 filetypes=(("Arquivo de Texto", "*.txt"), ("Todos os arquivos", "*.*"))
             )
             if caminho_Chempack_txt:
@@ -413,7 +616,7 @@ def gerarArquivo():
             caminho_Certificadora_txt = filedialog.asksaveasfilename(
                 title="Salvar relatório da Certificadora TXT",
                 defaultextension=".txt",
-                initialfile=f"841 - PAGAMENTO DA DG SERVIÇOS - {mes}",
+                initialfile=f"841 - PAGAMENTOS PARA A CERTIFICADORA DA EMPRESA - {empresa} - {mes}",
                 filetypes=(("Arquivo de Texto", "*.txt"), ("Todos os arquivos", "*.*"))
             )
             if caminho_Certificadora_txt:
@@ -427,6 +630,23 @@ def gerarArquivo():
                         arquivo4.write(linha_formatada.upper() + '\n')
                 messagebox.showinfo('Sucesso', f"Arquivo Certificadora salvo com sucesso!")
 
+                # Arquivo DGServicos
+            caminho_DGServicos_txt = filedialog.asksaveasfilename(
+                title="Salvar relatório da Certificadora TXT",
+                defaultextension=".txt",
+                initialfile=f"843 - PAGAMENTOS PARA A DG SERVICOS DA EMPRESA - {empresa} - {mes}",
+                filetypes=(("Arquivo de Texto", "*.txt"), ("Todos os arquivos", "*.*"))
+                )
+            if caminho_DGServicos_txt:
+                with open(caminho_DGServicos_txt, "w") as arquivo5:
+                    for dado in arquivoCertificadora:
+                        linha_formatada = (f"{dado['data']};"
+                                            f"{dado['Debito']};"
+                                            f"{dado['Credito']};"
+                                            f"{dado['valor']};;"
+                                            f"{dado['lançamento']};1;;; ")
+                        arquivo5.write(linha_formatada.upper() + '\n')
+                messagebox.showinfo('Sucesso', f"Arquivo DG Servicos salvo com sucesso!")
             # Relatório de erros
             caminho_relatorio_txt = filedialog.asksaveasfilename(
                 title="Salvar relatório de erros como",
@@ -445,5 +665,14 @@ def gerarArquivo():
 
         except Exception as e:
             print(f"Erro ao salvar arquivo TXT: {e}")
+
+        # Zera as variáveis globais para evitar duplicação
+        arquivoEmpresa = []
+        arquivoCompliance = []
+        arquivoChempack = []
+        arquivoCertificadora = []
+        arquivoDGServicos = []
+        relatorioErro = []
+
     else:
         print('Local de salvamento não selecionado')

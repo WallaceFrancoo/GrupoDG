@@ -8,7 +8,6 @@ from tkinter import messagebox
 from tkinter.filedialog import askopenfilename, asksaveasfilename
 
 def abrir_janela_depara():
-
     def cadastrar():
         DE = entry_de.get()
         PARA = entry_para.get()
@@ -109,18 +108,28 @@ home_frame.grid_columnconfigure(0, weight=1)
 home_frame_large_image_label = customtkinter.CTkLabel(home_frame, text="", image=large_test_image)
 home_frame_large_image_label.grid(row=0, column=0, columnspan=2, padx=10, pady=15)
 
+combo_opcoes = customtkinter.CTkComboBox(home_frame,
+                                             values=["840", "841", "842", "843"])
+combo_opcoes.grid(row=2, column=0, padx=20, pady=10)
+combo_opcoes.configure(state="readonly")
+
+
 botao_planilha = customtkinter.CTkButton(home_frame, text="Selecionar Planilhas", image=image_icon_image2, compound="right",
-                                    command=main.buscarArquivo)
+                                    command=lambda: main.buscarArquivo(combo_opcoes.get()))
 botao_planilha.place(relx=0.5, rely=0.5, anchor=customtkinter.CENTER)
-botao_planilha.grid(row=2, column=0, pady=50, columnspan=2)
+botao_planilha.grid(row=3, column=0, pady=50, columnspan=2)
+
+
+
+
 
 botao_gerar = customtkinter.CTkButton(home_frame, text="Gerar Arquivo TXT", compound="right",
-                                      command=main.gerarArquivo)
+                                      command=lambda: main.gerarArquivo(combo_opcoes.get()))
 botao_gerar.place(relx=0.5, rely=0.5, anchor=customtkinter.CENTER)
-botao_gerar.grid(row=3, column=0, pady=0, columnspan=2)
+botao_gerar.grid(row=4, column=0, pady=0, columnspan=2)
 
 frame_cadastro = customtkinter.CTkFrame(home_frame,fg_color="transparent")
-frame_cadastro.grid(row=4, column=0, pady=10, columnspan=2)
+frame_cadastro.grid(row=5, column=0, pady=10, columnspan=2)
 
 botao_cadastrodePara = customtkinter.CTkButton(frame_cadastro, text="Cadastrar dePara", compound="left",command=abrir_janela_depara)
 botao_cadastrodePara.grid(row=0, column=0, padx=10, pady=10)
