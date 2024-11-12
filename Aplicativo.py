@@ -61,7 +61,7 @@ def abrir_janela_depara():
     botao_cadastrar.grid(row=3, column=0, columnspan=2, pady=20)
 
 self = customtkinter.CTk()
-self.title("Conversão PDF Bradesco - Deskarplas")
+self.title("Conversão Excel Bradesco com identificação - Grupo Concepta!")
 self.geometry("600x450")
 
 self.grid_rowconfigure(0, weight=1)

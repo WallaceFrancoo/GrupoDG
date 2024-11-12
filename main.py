@@ -458,15 +458,32 @@ def verificarValor(opcao, valor, lancamento, data, ContaBanco):
     return debito, credito, valorLancamento, inicioHistorico
 def processar_extrato(banco, opcao, caminho_extrato,caminho_identificacao ,mes):
     ContaBanco = '537'
-    try:
-        extrato = pd.read_excel(caminho_extrato, header=8, engine='xlrd')  # Para arquivos XLS
-    except ValueError:
-        extrato = pd.read_excel(caminho_extrato, header=8, engine='openpyxl')  # Para arquivos XLSX
+    print(f"Verificando arquivo: {caminho_extrato}")
+    extensao = caminho_extrato.split('.')[-1].lower()  # Convertendo para minúsculas
+    print(f"Extensão do arquivo: {extensao}")
 
     try:
-        identificacao = pd.read_excel(caminho_identificacao, header=0, engine='xlrd')  # Para arquivos XLS
-    except ValueError:
-        identificacao = pd.read_excel(caminho_identificacao, header=0, engine='openpyxl')  # Para arquivos XLSX
+        # Verificar a extensão do arquivo e escolher o engine adequado
+        if extensao == 'xls':
+            extrato = pd.read_excel(caminho_extrato, header=8, engine='xlrd')  # Para arquivos .xls
+        elif extensao == 'xlsx':
+            extrato = pd.read_excel(caminho_extrato, header=8, engine='openpyxl')  # Para arquivos .xlsx
+        else:
+            raise ValueError(f"Formato de arquivo não suportado: {caminho_extrato}")
+    except Exception as e:
+        print(f"Erro ao ler o arquivo de extrato: {e}")
+        return  # Retorna se houver erro
+
+    try:
+        if caminho_identificacao.endswith('.xls'):
+            identificacao = pd.read_excel(caminho_identificacao, header=0, engine='xlrd')  # Para arquivos .xls
+        elif caminho_identificacao.endswith('.xlsx'):
+            identificacao = pd.read_excel(caminho_identificacao, header=0, engine='openpyxl')  # Para arquivos .xlsx
+        else:
+            raise ValueError(f"Formato de arquivo não suportado: {caminho_identificacao}")
+    except Exception as e:
+        print(f"Erro ao ler o arquivo de identificação: {e}")
+        # Opcionalmente, logue o erro ou forneça um feedback ao usuário
 
     extrato.columns = extrato.columns.str.strip()
     identificacao.columns = identificacao.columns.str.strip()
@@ -580,7 +597,7 @@ def gerarArquivo(empresa):
             caminho_Compliance_txt = filedialog.asksaveasfilename(
                 title="Salvar relatório da complince TXT",
                 defaultextension=".txt",
-                initialfile=f"842 - PAGAMENTOS PARA A COMPLINCE DA EMPRESA - {empresa} - {mes}",
+                initialfile=f"842 - PAGAMENTOS PARA A COMPLIANCE DA EMPRESA - {empresa} - {mes}",
                 filetypes=(("Arquivo de Texto", "*.txt"), ("Todos os arquivos", "*.*"))
             )
             if caminho_Compliance_txt:

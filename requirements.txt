@@ -1,0 +1,5 @@
+pandas
+unidecode
+PyPDF2
+Pillow 
+customtkinter
